@@ -2,7 +2,7 @@
 # Data Weaver API  
 
 [![Java](https://img.shields.io/badge/Java-21-orange)](https://www.oracle.com/java/technologies/javase-jdk21-downloads.html)  
-[![Spring Boot](https://img.shields.io/badge/SpringBoot-3.1.4-brightgreen)](https://spring.io/projects/spring-boot)  
+[![Spring Boot](https://img.shields.io/badge/SpringBoot-3.1.5-brightgreen)](https://spring.io/projects/spring-boot)  
 
 **Data Weaver API** is an API built with **Spring Boot** that provides services for creating and extracting dashboards and reports. It enables developers to integrate data generation and analysis features into their applications easily and efficiently.  
 
