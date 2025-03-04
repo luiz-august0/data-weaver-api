@@ -18,6 +18,8 @@ public class ReportFilterDTO extends AbstractDTO<ReportFilter> {
 
     private EnumReportFilterType type;
 
+    private String sql;
+
     private String standardValue;
 
     private Integer order;

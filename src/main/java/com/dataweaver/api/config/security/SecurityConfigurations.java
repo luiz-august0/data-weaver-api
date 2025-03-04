@@ -3,7 +3,6 @@ package com.dataweaver.api.config.security;
 import com.dataweaver.api.constants.Paths;
 import com.dataweaver.api.controller.interfaces.IAuthenticationController;
 import com.dataweaver.api.controller.interfaces.IAuthenticationRecoveryController;
-import com.dataweaver.api.controller.interfaces.IHealthCheckController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +32,9 @@ public class SecurityConfigurations {
     @Value(Paths.prefixPath)
     private String prefixPath;
 
+    @Value(Paths.backofficePrefixPath)
+    private String backofficePrefixPath;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -41,8 +43,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 IAuthenticationController.PATH.replace(Paths.prefixPath, prefixPath) + "/**",
-                                IHealthCheckController.PATH.replace(Paths.prefixPath, prefixPath) + "/**",
                                 IAuthenticationRecoveryController.PATH.replace(Paths.prefixPath, prefixPath) + "/**",
+                                backofficePrefixPath + "/**",
                                 "/v3/api-docs/**",
                                 "/configuration/ui",
                                 "/swagger-resources/**",

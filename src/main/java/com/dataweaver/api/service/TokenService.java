@@ -23,6 +23,10 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    private final String databasePasswordClaim = "database-pass";
+
+    private final String sessionIssuer = "dataweaver-session";
+
     private Instant genExpirationDateAccessToken() {
         return LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.of("-03:00"));
     }
@@ -53,16 +57,16 @@ public class TokenService {
         }
     }
 
-    public String generateToken(User user) {
+    public String generateToken(User user, String databasePassword) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+            return JWT.create()
                     .withAudience(user.getSchema())
-                    .withIssuer("dataweaver-session")
+                    .withIssuer(sessionIssuer)
                     .withSubject(user.getLogin())
+                    .withClaim(databasePasswordClaim, databasePassword)
                     .withExpiresAt(genExpirationDateAccessToken())
                     .sign(algorithm);
-            return token;
         } catch (JWTCreationException e) {
             throw new ApplicationGenericsException(EnumGenericsException.GENERATE_TOKEN);
         }
@@ -73,13 +77,12 @@ public class TokenService {
             String uniqueId = UUID.randomUUID().toString();
             String userIdAndSchema = user.getId() + "-" + user.getSchema();
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+            return JWT.create()
                     .withJWTId(uniqueId)
-                    .withIssuer("dataweaver-session")
+                    .withIssuer(sessionIssuer)
                     .withSubject(new String(Base64.getEncoder().encode(userIdAndSchema.getBytes())))
                     .withExpiresAt(genExpirationDateRefreshToken())
                     .sign(algorithm);
-            return token;
         } catch (JWTCreationException e) {
             throw new ApplicationGenericsException(EnumGenericsException.GENERATE_REFRESH_TOKEN);
         }
@@ -90,13 +93,12 @@ public class TokenService {
             String uniqueId = UUID.randomUUID().toString();
             String userIdAndSchema = user.getId() + "-" + user.getSchema();
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+            return JWT.create()
                     .withJWTId(uniqueId)
-                    .withIssuer("dataweaver-session")
+                    .withIssuer(sessionIssuer)
                     .withSubject(new String(Base64.getEncoder().encode(userIdAndSchema.getBytes())))
                     .withExpiresAt(genExpirationDateRecoveryToken())
                     .sign(algorithm);
-            return token;
         } catch (JWTCreationException e) {
             throw new ApplicationGenericsException(EnumGenericsException.GENERATE_RECOVERY_TOKEN);
         }
@@ -106,7 +108,7 @@ public class TokenService {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
         return JWT.require(algorithm)
-                .withIssuer("dataweaver-session")
+                .withIssuer(sessionIssuer)
                 .build()
                 .verify(token)
                 .getSubject();
@@ -129,4 +131,13 @@ public class TokenService {
             throw new ApplicationGenericsException(e.getMessage());
         }
     }
+
+    public String getDatabasePasswordClaimFromToken(String token) {
+        try {
+            return JWT.decode(token).getClaim(databasePasswordClaim).asString();
+        } catch (Exception e) {
+            throw new ApplicationGenericsException(e.getMessage());
+        }
+    }
+
 }

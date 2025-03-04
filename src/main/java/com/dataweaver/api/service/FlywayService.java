@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,15 +28,14 @@ public class FlywayService {
     public void doMigrations() {
         List<String> schemas = new ArrayList<>();
 
-        try {
-            ResultSet resultSet = dataSource.getConnection().createStatement().executeQuery(
+        try (Connection connection = dataSource.getConnection()) {
+            ResultSet resultSet = connection.createStatement().executeQuery(
                     " select schema_name as schema from information_schema.schemata " +
                             " where schema_name not in ('information_schema', 'public') and substring(schema_name, 1, 2) <> 'pg' "
             );
 
             while (resultSet.next()) schemas.add(resultSet.getString(1));
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -57,7 +56,7 @@ public class FlywayService {
         }
     }
 
-    private void migrateAndRepair(String schema) {
+    public void migrateAndRepair(String schema) {
         repair(schema);
         migrate(schema);
     }

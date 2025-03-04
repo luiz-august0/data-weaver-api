@@ -1,6 +1,6 @@
-package com.dataweaver.api.controller;
+package com.dataweaver.api.controller.backoffice;
 
-import com.dataweaver.api.controller.interfaces.IHealthCheckController;
+import com.dataweaver.api.controller.backoffice.interfaces.IHealthCheckController;
 import com.dataweaver.api.utils.DateUtil;
 import org.springframework.web.bind.annotation.RestController;
 

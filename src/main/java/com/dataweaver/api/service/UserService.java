@@ -41,7 +41,7 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
 
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 
-        user.setSchema(Utils.nvl(user.getSchema(), TenantContext.getCurrentTenant()));
+        user.setSchema(TenantContext.getCurrentTenant());
 
         resolverUserPhoto(user, null);
 

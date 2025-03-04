@@ -1,4 +1,4 @@
 package com.dataweaver.api.model.records;
 
-public record AuthenticationRecord(String login, String password) {
+public record AuthenticationRecord(String login, String password, String databasePassword) {
 }

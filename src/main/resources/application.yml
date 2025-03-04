@@ -3,6 +3,7 @@ app:
   description: "DataWeaver API Local"
   version: "1.0.0"
   base-path: /api
+  backoffice-base-path: /backoffice
   url: http://localhost:3000
 
 api:
@@ -10,6 +11,9 @@ api:
   security:
     token:
       secret: ${API_TOKEN_SECRET:API123}
+
+backoffice:
+  prefix.v1: ${app.backoffice-base-path}/v1
 
 spring:
   config.activate.on-profile: localhost
@@ -93,6 +97,7 @@ app:
   description: "DataWeaver API Docker"
   version: "1.0.0"
   base-path: /api
+  backoffice-base-path: /backoffice
   url: https://sonixsoft.com.br
 
 api:
@@ -100,6 +105,9 @@ api:
   security:
     token:
       secret: ${API_TOKEN_SECRET:API123}
+
+backoffice:
+  prefix.v1: ${app.backoffice-base-path}/v1
 
 spring:
   config.activate.on-profile: docker

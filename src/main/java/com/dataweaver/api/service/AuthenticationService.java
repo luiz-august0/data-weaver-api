@@ -48,7 +48,7 @@ public class AuthenticationService {
 
             if (!user.getActive()) throw new ApplicationGenericsException(userInactiveEnum);
 
-            String accessToken = tokenService.generateToken(user);
+            String accessToken = tokenService.generateToken(user, authenticationRecord.databasePassword());
             String refreshToken = tokenService.generateRefreshToken(user);
 
             return makeTokenBeanFromUser(user, accessToken, refreshToken);
@@ -84,7 +84,7 @@ public class AuthenticationService {
             );
         }
 
-        String accessToken = tokenService.generateToken(user);
+        String accessToken = tokenService.generateToken(user, null);
         String newRefreshToken = tokenService.generateRefreshToken(user);
 
         return makeTokenBeanFromUser(user, accessToken, newRefreshToken);

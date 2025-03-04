@@ -2,6 +2,7 @@ package com.dataweaver.api.model.dtos;
 
 import com.dataweaver.api.model.entities.Report;
 import com.dataweaver.api.pattern.dtos.AbstractDTO;
+import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,10 @@ public class ReportDTO extends AbstractDTO<Report> {
     private String title;
 
     private String key;
+
+    private String sql;
+
+    private String sqlTotalizers;
 
     private Boolean active;
 

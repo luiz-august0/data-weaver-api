@@ -1,7 +1,7 @@
 package com.dataweaver.api.service;
 
 import com.dataweaver.api.infrastructure.reports.ReportFilterMapper;
-import com.dataweaver.api.infrastructure.reports.interfaces.IReportQuery;
+import com.dataweaver.api.infrastructure.reports.ReportQueryExecutor;
 import com.dataweaver.api.model.entities.Report;
 import com.dataweaver.api.repository.ReportRepository;
 import com.dataweaver.api.validators.ReportValidator;
@@ -14,19 +14,19 @@ import java.util.Map;
 @Service
 public class ReportService extends AbstractService<ReportRepository, Report, ReportValidator> {
 
-    private final IReportQuery reportQuery;
+    private final ReportQueryService reportQueryService;
     private final ReportRepository reportRepository;
 
-    ReportService(ReportRepository reportRepository, IReportQuery reportQuery) {
+    ReportService(ReportQueryService reportQueryService, ReportRepository reportRepository) {
         super(reportRepository, new Report(), new ReportValidator());
-        this.reportQuery = reportQuery;
+        this.reportQueryService = reportQueryService;
         this.reportRepository = reportRepository;
     }
 
     public Page<Map<String, Object>> getReport(Integer id, Map<String, Object> filters, Pageable pageable) {
         Report report = findAndValidate(id);
 
-        return reportQuery.getQueryResult(
+        return reportQueryService.getQueryResult(
                 report.getSql(),
                 pageable,
                 ReportFilterMapper.mapFilters(filters, report.getFilters()),
@@ -36,7 +36,7 @@ public class ReportService extends AbstractService<ReportRepository, Report, Rep
     public Map<String, Object> getReportTotalizers(Integer id, Map<String, Object> filters) {
         Report report = findAndValidate(id);
 
-        return reportQuery.getTotalizersQueryResult(report.getSqlTotalizers(), ReportFilterMapper.mapFilters(filters, report.getFilters()));
+        return reportQueryService.getTotalizersQueryResult(report.getSqlTotalizers(), ReportFilterMapper.mapFilters(filters, report.getFilters()));
     }
 
     public Report findByKey(String key) {
