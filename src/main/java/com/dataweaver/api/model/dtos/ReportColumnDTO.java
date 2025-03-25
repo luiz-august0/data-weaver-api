@@ -22,7 +22,7 @@ public class ReportColumnDTO extends AbstractDTO<ReportColumn> {
 
     private String align;
 
-    private Integer order;
+    private Integer sort;
 
     private EnumColumnFormat format;
 

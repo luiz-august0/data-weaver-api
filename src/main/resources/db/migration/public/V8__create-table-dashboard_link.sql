@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS public.dashboard_link (
     id_dashboard INT4 NOT NULL,
     title varchar(150) not null,
     link text not null,
-    "order" int4 not null,
+    sort int4 not null,
     schema varchar(100)
 );
 

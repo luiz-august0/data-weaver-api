@@ -16,10 +16,13 @@ public class DatabaseConnectionService extends AbstractService<DatabaseConnectio
 
     private final DatabaseConnectionValidator databaseConnectionValidator;
 
-    DatabaseConnectionService(DatabaseConnectionRepository databaseConnectionRepository) {
-        super(databaseConnectionRepository, new DatabaseConnection(), new DatabaseConnectionValidator(databaseConnectionRepository));
+    DatabaseConnectionService(DatabaseConnectionRepository databaseConnectionRepository,
+                              DatasourceConnectionService datasourceConnectionService) {
+        super(databaseConnectionRepository, new DatabaseConnection(), new DatabaseConnectionValidator(
+                databaseConnectionRepository, datasourceConnectionService));
         this.databaseConnectionRepository = databaseConnectionRepository;
-        this.databaseConnectionValidator = new DatabaseConnectionValidator(databaseConnectionRepository);
+        this.databaseConnectionValidator = new DatabaseConnectionValidator(
+                databaseConnectionRepository, datasourceConnectionService);
     }
 
     public DatabaseConnection create(DatabaseConnection databaseConnection) {

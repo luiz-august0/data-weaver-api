@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static com.dataweaver.api.constants.Paths.prefixPath;
 
 @RequestMapping(IDashboardController.PATH)
-public interface IDashboardController extends IAbstractAllGetController<DashboardDTO> {
+public interface IDashboardController extends IAbstractAllController<DashboardDTO> {
 
     String PATH = prefixPath + "/dashboard";
 

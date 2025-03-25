@@ -21,4 +21,6 @@ public class DashboardDTO extends AbstractDTO<Dashboard> {
 
     private List<DashboardLinkDTO> links;
 
+    private Boolean main;
+
 }

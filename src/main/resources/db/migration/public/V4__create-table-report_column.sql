@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.report_column (
     header_name varchar(50) not null,
     header_align varchar(8) not null,
     align varchar(8) not null,
-    "order" int4 not null,
+    sort int4 not null,
     format varchar(20) not null default 'DEFAULT',
     schema varchar(100)
 );

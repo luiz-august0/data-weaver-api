@@ -15,6 +15,6 @@ public class DashboardLinkDTO extends AbstractDTO<DashboardLink> {
 
     private String link;
 
-    private Integer order;
+    private Integer sort;
 
 }

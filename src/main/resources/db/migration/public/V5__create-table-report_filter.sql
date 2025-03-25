@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.report_filter (
     type varchar(20) not null,
     sql text not null,
     standard_value varchar(20),
-    "order" int4 not null,
+    sort int4 not null,
     schema varchar(100)
 );
 

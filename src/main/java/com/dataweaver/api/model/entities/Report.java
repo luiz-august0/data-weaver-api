@@ -39,11 +39,11 @@ public class Report extends AbstractEntity {
     private Boolean active;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("order")
+    @OrderBy("sort")
     private List<ReportColumn> columns;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("order")
+    @OrderBy("sort")
     private List<ReportFilter> filters;
 
     @Transient

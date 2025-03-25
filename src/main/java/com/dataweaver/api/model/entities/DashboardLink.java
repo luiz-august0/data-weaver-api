@@ -27,8 +27,8 @@ public class DashboardLink extends AbstractEntity {
     @Column(name = "link", nullable = false)
     private String link;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "sort", nullable = false)
+    private Integer sort;
 
     public String getPortugueseClassName() {
         return "dashboard link";

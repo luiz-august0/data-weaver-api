@@ -25,8 +25,8 @@ public class DashboardReport extends AbstractEntity {
     @ManyToOne
     private Report report;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "sort", nullable = false)
+    private Integer sort;
 
     public String getPortugueseClassName() {
         return "vínculo de relatório e dashboard";

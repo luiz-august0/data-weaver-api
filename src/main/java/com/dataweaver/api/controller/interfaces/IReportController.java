@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.dataweaver.api.constants.Paths.prefixPath;
 
 @RequestMapping(IReportController.PATH)
-public interface IReportController extends IAbstractAllGetController<ReportDTO> {
+public interface IReportController extends IAbstractAllController<ReportDTO> {
 
     String PATH = prefixPath + "/report";
 

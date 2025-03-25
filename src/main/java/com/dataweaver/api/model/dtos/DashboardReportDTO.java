@@ -13,6 +13,6 @@ public class DashboardReportDTO extends AbstractDTO<DashboardReport> {
 
     private ReportDTO report;
 
-    private Integer order;
+    private Integer sort;
 
 }

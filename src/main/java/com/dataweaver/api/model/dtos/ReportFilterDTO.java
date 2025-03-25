@@ -22,6 +22,6 @@ public class ReportFilterDTO extends AbstractDTO<ReportFilter> {
 
     private String standardValue;
 
-    private Integer order;
+    private Integer sort;
 
 }

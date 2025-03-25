@@ -38,8 +38,8 @@ public class ReportFilter extends AbstractEntity implements IReportFilter {
     @Column(name = "standard_value")
     private String standardValue;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "sort", nullable = false)
+    private Integer sort;
 
     @Override
     public String getPortugueseClassName() {

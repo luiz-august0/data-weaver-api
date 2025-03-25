@@ -1,21 +1,15 @@
 package com.dataweaver.api.service;
 
 import com.dataweaver.api.infrastructure.reports.ReportQueryExecutor;
-import com.dataweaver.api.model.entities.DatabaseConnection;
 import com.dataweaver.api.utils.TokenUtil;
-import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,37 +22,22 @@ public class ReportQueryService extends ReportQueryExecutor {
 
     private final DatabaseConnectionService databaseConnectionService;
 
+    private final DatasourceConnectionService dataSourceConnectionService;
+
+
     @Override
     protected EntityManager getEntityManager(EntityManagerFactory entityManagerFactory) {
-        return entityManagerFactory.createEntityManager();
+        return dataSourceConnectionService.getEntityManager(entityManagerFactory);
     }
 
     @Override
     protected EntityManagerFactory getEntityManagerFactory(DataSource dataSource) {
-        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setDataSource(dataSource);
-        factoryBean.setPackagesToScan("com.dataweaver.api.model.entities");
-        factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-
-        Map<String, Object> jpaProperties = new HashMap<>();
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        factoryBean.setJpaPropertyMap(jpaProperties);
-
-        factoryBean.afterPropertiesSet();
-        return factoryBean.getObject();
+        return dataSourceConnectionService.getEntityManagerFactory(dataSource);
     }
 
     @Override
     protected DataSource getDatasource() {
-        DatabaseConnection connection = databaseConnectionService.getConnection();
-
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://" + connection.getHost() + ":" + connection.getPort() + "/" + connection.getDatabase());
-        dataSource.setUsername(connection.getUsername());
-        dataSource.setPassword(getDatabasePassword());
-        dataSource.setDriverClassName("org.postgresql.Driver");
-
-        return dataSource;
+        return dataSourceConnectionService.getDatasource(databaseConnectionService.getConnection(), getDatabasePassword());
     }
 
     private String getDatabasePassword() {

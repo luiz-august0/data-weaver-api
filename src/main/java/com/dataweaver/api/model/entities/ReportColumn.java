@@ -38,8 +38,8 @@ public class ReportColumn extends AbstractEntity implements IReportColumn {
     @Column(name = "align", nullable = false)
     private String align;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "sort", nullable = false)
+    private Integer sort;
 
     @Column(name = "format")
     private EnumColumnFormat format;

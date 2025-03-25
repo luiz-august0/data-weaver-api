@@ -26,11 +26,11 @@ public class Dashboard extends AbstractEntity {
     private String title;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("order")
+    @OrderBy("sort")
     private List<DashboardReport> reports;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("order")
+    @OrderBy("sort")
     private List<DashboardLink> links;
 
     @Column(name = "main", nullable = false)

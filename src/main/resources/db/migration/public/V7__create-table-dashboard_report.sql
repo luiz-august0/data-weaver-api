@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS public.dashboard_report (
     id INT4 NOT NULL,
     id_dashboard INT4 NOT NULL,
     id_report INT4 NOT NULL,
-    "order" int4 not null,
+    sort int4 not null,
     schema varchar(100)
 );
 
