@@ -29,7 +29,7 @@ public class DatabaseConnection extends AbstractEntity {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Transient
     private String password;
 
     public String getPortugueseClassName() {

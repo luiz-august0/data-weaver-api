@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS public.database_connection (
     port INT4 not null,
     database varchar(255) not null,
     username varchar(255) not null,
-    password varchar(255) not null,
     schema varchar(100)
 );
 
