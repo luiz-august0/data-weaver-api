@@ -5,6 +5,7 @@ import com.dataweaver.api.model.entities.DatabaseConnection;
 import com.dataweaver.api.repository.DatabaseConnectionRepository;
 import com.dataweaver.api.validators.DatabaseConnectionValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,12 +25,14 @@ public class DatabaseConnectionService extends AbstractService<DatabaseConnectio
                 databaseConnectionRepository, datasourceConnectionService);
     }
 
+    @Transactional
     public DatabaseConnection create(DatabaseConnection databaseConnection) {
         databaseConnectionValidator.validateInsert(databaseConnection);
 
         return databaseConnectionRepository.save(databaseConnection);
     }
 
+    @Transactional
     public DatabaseConnection edit(DatabaseConnection databaseConnection) {
         Optional<DatabaseConnection> optionalConnection = databaseConnectionRepository.findAll().stream().findFirst();
 
@@ -43,11 +46,14 @@ public class DatabaseConnectionService extends AbstractService<DatabaseConnectio
     }
 
     public DatabaseConnection getConnection() {
+        return get().orElseThrow(() -> new ApplicationGenericsException("Não há conexão de banco de dados criada"));
+    }
+
+    public Optional<DatabaseConnection> get() {
         return databaseConnectionRepository
                 .findAll()
                 .stream()
-                .findFirst()
-                .orElseThrow(() -> new ApplicationGenericsException("Não há conexão de banco de dados criada"));
+                .findFirst();
     }
 
 }

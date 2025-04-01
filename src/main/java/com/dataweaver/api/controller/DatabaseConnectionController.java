@@ -5,17 +5,14 @@ import com.dataweaver.api.infrastructure.converter.Converter;
 import com.dataweaver.api.model.dtos.DatabaseConnectionDTO;
 import com.dataweaver.api.model.entities.DatabaseConnection;
 import com.dataweaver.api.service.DatabaseConnectionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RestController
-public class DatabaseConnectionController extends AbstractAllGetController<DatabaseConnectionService, DatabaseConnectionDTO> implements IDatabaseConnectionController {
+public class DatabaseConnectionController implements IDatabaseConnectionController {
 
     private final DatabaseConnectionService databaseConnectionService;
-
-    DatabaseConnectionController(DatabaseConnectionService databaseConnectionService) {
-        super(databaseConnectionService, new DatabaseConnectionDTO());
-        this.databaseConnectionService = databaseConnectionService;
-    }
 
     @Override
     public DatabaseConnectionDTO create(DatabaseConnectionDTO databaseConnection) {
@@ -25,6 +22,11 @@ public class DatabaseConnectionController extends AbstractAllGetController<Datab
     @Override
     public DatabaseConnectionDTO edit(DatabaseConnectionDTO databaseConnection) {
         return Converter.convertEntityToDTO(databaseConnectionService.edit(Converter.convertDTOToEntity(databaseConnection, DatabaseConnection.class)), DatabaseConnectionDTO.class);
+    }
+
+    @Override
+    public DatabaseConnectionDTO get() {
+        return Converter.convertEntityToDTO(databaseConnectionService.get().orElse(null), DatabaseConnectionDTO.class);
     }
 
 }
