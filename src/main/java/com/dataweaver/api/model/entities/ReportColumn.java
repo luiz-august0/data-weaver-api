@@ -1,6 +1,7 @@
 package com.dataweaver.api.model.entities;
 
 import com.dataweaver.api.infrastructure.reports.interfaces.IReportColumn;
+import com.dataweaver.api.model.enums.EnumColumnAlign;
 import com.dataweaver.api.model.enums.EnumColumnFormat;
 import com.dataweaver.api.pattern.entities.AbstractEntity;
 import jakarta.persistence.*;
@@ -33,15 +34,15 @@ public class ReportColumn extends AbstractEntity implements IReportColumn {
     private String headerName;
 
     @Column(name = "header_align", nullable = false)
-    private String headerAlign;
+    private EnumColumnAlign headerAlign;
 
     @Column(name = "align", nullable = false)
-    private String align;
+    private EnumColumnAlign align;
 
     @Column(name = "sort", nullable = false)
     private Integer sort;
 
-    @Column(name = "format")
+    @Column(name = "format", nullable = false)
     private EnumColumnFormat format;
 
     @Override
