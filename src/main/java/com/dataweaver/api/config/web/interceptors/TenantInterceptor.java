@@ -1,6 +1,7 @@
-package com.dataweaver.api.config.multitenancy;
+package com.dataweaver.api.config.web.interceptors;
 
 import com.auth0.jwt.JWT;
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumGenericsException;
 import com.dataweaver.api.utils.Utils;

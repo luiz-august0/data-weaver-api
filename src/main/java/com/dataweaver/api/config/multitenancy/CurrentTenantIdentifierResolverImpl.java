@@ -1,5 +1,6 @@
 package com.dataweaver.api.config.multitenancy;
 
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;

@@ -2,11 +2,10 @@ package com.dataweaver.api.config.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.dataweaver.api.config.multitenancy.TenantContext;
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumGenericsException;
 import com.dataweaver.api.model.entities.User;
-import com.dataweaver.api.repository.UserRepository;
 import com.dataweaver.api.service.TokenService;
 import com.dataweaver.api.service.UserService;
 import com.dataweaver.api.utils.StringUtil;

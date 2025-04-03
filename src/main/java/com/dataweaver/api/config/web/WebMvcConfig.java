@@ -1,11 +1,16 @@
 package com.dataweaver.api.config.web;
 
+import com.dataweaver.api.config.web.interceptors.TenantInterceptor;
+import com.dataweaver.api.config.web.interceptors.UserEntityManagerInterceptor;
+import com.dataweaver.api.constants.Paths;
+import com.dataweaver.api.controller.interfaces.IReportController;
+import com.dataweaver.api.infrastructure.deserializers.EmptyStringAsNullModule;
+import com.dataweaver.api.utils.enums.EnumDateFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.dataweaver.api.config.multitenancy.TenantInterceptor;
-import com.dataweaver.api.infrastructure.deserializers.EmptyStringAsNullModule;
-import com.dataweaver.api.utils.enums.EnumDateFormat;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,10 +24,17 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final TenantInterceptor tenantInterceptor;
+
+    private final UserEntityManagerInterceptor userEntityManagerInterceptor;
+
     private static final long MAX_AGE_SECS = 3600;
+
+    @Value(Paths.prefixPath)
+    private String prefixPath;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -39,13 +51,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         converters.add(jsonConverter);
     }
 
-    public WebMvcConfig(TenantInterceptor tenantInterceptor) {
-        this.tenantInterceptor = tenantInterceptor;
-    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addWebRequestInterceptor(tenantInterceptor);
+        registry.addInterceptor(userEntityManagerInterceptor).addPathPatterns(
+                IReportController.PATH.replace(Paths.prefixPath, prefixPath) + "/{id}/result",
+                IReportController.PATH.replace(Paths.prefixPath, prefixPath) + "/{id}/totalizers"
+        );
     }
 
     @Override

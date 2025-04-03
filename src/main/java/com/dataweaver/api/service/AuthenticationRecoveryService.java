@@ -1,6 +1,6 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.config.multitenancy.TenantContext;
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.events.mail.MailEventPublisher;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumGenericsException;

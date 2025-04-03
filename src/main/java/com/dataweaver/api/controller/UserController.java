@@ -1,6 +1,7 @@
 package com.dataweaver.api.controller;
 
 import com.dataweaver.api.controller.interfaces.IUserController;
+import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.infrastructure.converter.Converter;
 import com.dataweaver.api.model.dtos.UserDTO;
 import com.dataweaver.api.model.entities.User;
@@ -47,7 +48,7 @@ public class UserController extends AbstractAllController<UserService, UserDTO, 
     }
 
     private void setDefaultFilters(Map filters) {
-        filters.put("id:<>:", userService.getUserByContext().getId());
+        filters.put("id:<>:", UserContext.getUserByContext().getId());
         filters.put("login:<>:", "admin");
     }
 

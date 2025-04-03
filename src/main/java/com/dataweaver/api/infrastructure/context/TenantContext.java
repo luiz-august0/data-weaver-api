@@ -1,4 +1,4 @@
-package com.dataweaver.api.config.multitenancy;
+package com.dataweaver.api.infrastructure.context;
 
 import com.dataweaver.api.utils.StringUtil;
 

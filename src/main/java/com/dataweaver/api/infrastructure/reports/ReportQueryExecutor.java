@@ -1,14 +1,12 @@
 package com.dataweaver.api.infrastructure.reports;
 
+import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.reports.interfaces.IReportColumn;
 import com.dataweaver.api.infrastructure.reports.interfaces.IReportFilter;
 import com.dataweaver.api.utils.ListUtil;
 import com.dataweaver.api.utils.NumericUtil;
 import com.dataweaver.api.utils.Utils;
-import com.zaxxer.hikari.HikariDataSource;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.TupleElement;
 import org.hibernate.query.NativeQuery;
@@ -16,27 +14,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public abstract class ReportQueryExecutor {
-
-    private EntityManager entityManager;
-
-    private EntityManagerFactory entityManagerFactory;
-
-    private DataSource dataSource;
-
-    protected abstract EntityManager getEntityManager(EntityManagerFactory entityManagerFactory);
-
-    protected abstract EntityManagerFactory getEntityManagerFactory(DataSource dataSource);
-
-    protected abstract DataSource getDatasource();
+@Component
+public class ReportQueryExecutor {
 
     public Page<Map<String, Object>> getQueryResult(String sql, Pageable pageable, Map<IReportFilter, Object> filters, List<? extends IReportColumn> reportColumns) {
         return handleLoadQueryResult(() -> {
@@ -97,18 +84,12 @@ public abstract class ReportQueryExecutor {
         } catch (Exception e) {
             throw new ApplicationGenericsException("Ocorreu um erro ao executar a consulta: " + e.getMessage());
         } finally {
-            entityManager.close();
-            entityManagerFactory.close();
-            ((HikariDataSource) dataSource).close();
+            UserContext.getCurrentEntityManager().close();
         }
     }
 
     @SuppressWarnings("unchecked")
     private NativeQuery<Tuple> buildQuery(String sql, Map<IReportFilter, Object> filters, Pageable pageable, Boolean count) {
-        dataSource = getDatasource();
-        entityManagerFactory = getEntityManagerFactory(dataSource);
-        entityManager = getEntityManager(entityManagerFactory);
-
         String filtersSql = filters.keySet().stream().map(iReportFilter -> " " + iReportFilter.getSql() + " ").toList().stream().reduce(String::concat).orElse("");
         sql = sql.replace(":filters", filtersSql);
 
@@ -135,7 +116,7 @@ public abstract class ReportQueryExecutor {
             }
         }
 
-        NativeQuery<Tuple> query = (NativeQuery<Tuple>) entityManager.createNativeQuery(sql, Tuple.class);
+        NativeQuery<Tuple> query = (NativeQuery<Tuple>) UserContext.getCurrentEntityManager().createNativeQuery(sql, Tuple.class);
 
         filters.forEach((iReportFilter, filterValue) -> {
             query.setParameter(iReportFilter.getParameter(), filterValue);

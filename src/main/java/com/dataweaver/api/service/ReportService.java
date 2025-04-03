@@ -1,6 +1,7 @@
 package com.dataweaver.api.service;
 
 import com.dataweaver.api.infrastructure.reports.ReportFilterMapper;
+import com.dataweaver.api.infrastructure.reports.ReportQueryExecutor;
 import com.dataweaver.api.model.entities.Report;
 import com.dataweaver.api.model.entities.ReportColumn;
 import com.dataweaver.api.model.entities.ReportFilter;
@@ -18,19 +19,19 @@ import java.util.stream.Collectors;
 @Service
 public class ReportService extends AbstractService<ReportRepository, Report, ReportValidator> {
 
-    private final ReportQueryService reportQueryService;
+    private final ReportQueryExecutor reportQueryExecutor;
     private final ReportRepository reportRepository;
 
-    ReportService(ReportQueryService reportQueryService, ReportRepository reportRepository) {
+    ReportService(ReportQueryExecutor reportQueryExecutor, ReportRepository reportRepository) {
         super(reportRepository, new Report(), new ReportValidator());
-        this.reportQueryService = reportQueryService;
+        this.reportQueryExecutor = reportQueryExecutor;
         this.reportRepository = reportRepository;
     }
 
     public Page<Map<String, Object>> getReport(Integer id, Map<String, Object> filters, Pageable pageable) {
         Report report = findAndValidate(id);
 
-        return reportQueryService.getQueryResult(
+        return reportQueryExecutor.getQueryResult(
                 report.getSql(),
                 pageable,
                 ReportFilterMapper.mapFilters(filters, report.getFilters()),
@@ -40,7 +41,7 @@ public class ReportService extends AbstractService<ReportRepository, Report, Rep
     public Map<String, Object> getReportTotalizers(Integer id, Map<String, Object> filters) {
         Report report = findAndValidate(id);
 
-        return reportQueryService.getTotalizersQueryResult(report.getSqlTotalizers(), ReportFilterMapper.mapFilters(filters, report.getFilters()));
+        return reportQueryExecutor.getTotalizersQueryResult(report.getSqlTotalizers(), ReportFilterMapper.mapFilters(filters, report.getFilters()));
     }
 
     public Report findByKey(String key) {
@@ -78,4 +79,5 @@ public class ReportService extends AbstractService<ReportRepository, Report, Rep
                 .collect(Collectors.toList())
         );
     }
+
 }

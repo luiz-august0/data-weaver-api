@@ -1,6 +1,8 @@
 package com.dataweaver.api.service;
 
+import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.model.entities.DatabaseConnection;
+import com.dataweaver.api.model.entities.User;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -13,10 +15,23 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class DatasourceConnectionService {
+
+    private static final Map<User, EntityManagerFactory> USER_ENTITY_MANAGER_FACTORY_MAP = new ConcurrentHashMap<>();
+
+    public EntityManagerFactory getUserEntityManagerFactory(DatabaseConnection connection, String databasePassword) {
+        return USER_ENTITY_MANAGER_FACTORY_MAP.computeIfAbsent(UserContext.getUserByContext(), user ->
+                getEntityManagerFactory(getDatasource(connection, databasePassword))
+        );
+    }
+
+    public void removeUserEntityManagerFactory(User user) {
+        USER_ENTITY_MANAGER_FACTORY_MAP.remove(user);
+    }
 
     public EntityManager getEntityManager(EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager();

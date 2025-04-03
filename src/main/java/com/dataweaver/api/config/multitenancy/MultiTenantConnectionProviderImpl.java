@@ -1,5 +1,6 @@
 package com.dataweaver.api.config.multitenancy;
 
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;

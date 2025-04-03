@@ -1,7 +1,8 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.config.multitenancy.TenantContext;
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.external.s3.S3StorageService;
+import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.model.entities.User;
 import com.dataweaver.api.model.enums.EnumUserRole;
 import com.dataweaver.api.repository.UserRepository;
@@ -81,7 +82,7 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
     public User updateContextUser(User user) {
         user.setActive(Boolean.TRUE);
 
-        return this.update(getUserByContext().getId(), user);
+        return this.update(UserContext.getUserByContext().getId(), user);
     }
 
     public Optional<User> findByLogin(String login) {

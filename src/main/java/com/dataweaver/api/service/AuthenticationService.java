@@ -1,6 +1,7 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.config.multitenancy.TenantContext;
+import com.dataweaver.api.infrastructure.context.TenantContext;
+import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumResourceNotFoundException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumUnauthorizedException;
@@ -38,6 +39,8 @@ public class AuthenticationService {
 
     private final UserService userService;
 
+    private final DatasourceConnectionService datasourceConnectionService;
+
     public TokenBean login(AuthenticationRecord authenticationRecord) {
         var loginPassword = new UsernamePasswordAuthenticationToken(authenticationRecord.login(), authenticationRecord.password());
         EnumUnauthorizedException userInactiveEnum = EnumUnauthorizedException.USER_INACTIVE;
@@ -50,6 +53,8 @@ public class AuthenticationService {
 
             String accessToken = tokenService.generateToken(user, authenticationRecord.databasePassword());
             String refreshToken = tokenService.generateRefreshToken(user);
+
+            datasourceConnectionService.removeUserEntityManagerFactory(user);
 
             return makeTokenBeanFromUser(user, accessToken, refreshToken);
         } catch (RuntimeException e) {
@@ -91,7 +96,7 @@ public class AuthenticationService {
     }
 
     public TokenBean getSession() {
-        User user = userService.findAndValidate(userService.getUserByContext().getId());
+        User user = userService.findAndValidate(UserContext.getUserByContext().getId());
 
         if (!user.getActive()) throw new ApplicationGenericsException(EnumUnauthorizedException.USER_INACTIVE);
 

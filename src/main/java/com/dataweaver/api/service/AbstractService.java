@@ -1,5 +1,6 @@
 package com.dataweaver.api.service;
 
+import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumResourceInactiveException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumResourceNotFoundException;
@@ -150,10 +151,6 @@ public abstract class AbstractService
         validator.validate(entityObject);
 
         return repository.save(entityObject);
-    }
-
-    public User getUserByContext() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

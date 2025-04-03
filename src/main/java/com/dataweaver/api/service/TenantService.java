@@ -1,6 +1,6 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.config.multitenancy.TenantContext;
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.ValidatorException;
 import com.dataweaver.api.model.entities.User;
