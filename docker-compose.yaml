@@ -19,8 +19,6 @@ services:
     environment:
       POSTGRES_PASSWORD: "dataweaver"
       POSTGRES_DB: "dataweaver"
-    volumes:
-      - ./create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
     networks:
       - spring-postgres
 networks:
