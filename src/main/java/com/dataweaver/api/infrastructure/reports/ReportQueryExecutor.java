@@ -28,35 +28,21 @@ public class ReportQueryExecutor {
     public Page<Map<String, Object>> getQueryResult(String sql, Pageable pageable, Map<IReportFilter, Object> filters, List<? extends IReportColumn> reportColumns) {
         return handleLoadQueryResult(() -> {
             NativeQuery<Tuple> query = buildQuery(sql, filters, pageable);
-            List<Map<String, Object>> resultMapList = new ArrayList<>();
 
             query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
             query.setMaxResults(pageable.getPageSize());
 
-            List<Tuple> result = query.getResultList();
-
-            result.forEach(row -> {
-                Map<String, Object> mapResult = new HashMap<>();
-                List<TupleElement<?>> tupleElements = row.getElements();
-
-                reportColumns.forEach(reportColumn -> {
-                    Object value = row.get(reportColumn.getField());
-
-                    Object formattedValue = Utils.isNotEmpty(value) ? reportColumn.getFormat().getColumnFormatter().formatValue(value) : null;
-
-                    mapResult.putIfAbsent(reportColumn.getField(), formattedValue);
-
-                    tupleElements.removeIf(tupleElement -> tupleElement.getAlias().equals(reportColumn.getField()));
-                });
-
-                tupleElements.forEach(tupleElement -> {
-                    mapResult.putIfAbsent(tupleElement.getAlias(), row.get(tupleElement));
-                });
-
-                resultMapList.add(mapResult);
-            });
+            List<Map<String, Object>> resultMapList = getQueryMapResult(reportColumns, query);
 
             return PageableExecutionUtils.getPage(resultMapList, pageable, () -> NumericUtil.parseInt(buildQueryCount(sql, filters).getSingleResult().get(0)));
+        });
+    }
+
+    public List<Map<String, Object>> getQueryResultList(String sql, Pageable pageable, Map<IReportFilter, Object> filters, List<? extends IReportColumn> reportColumns) {
+        return handleLoadQueryResultList(() -> {
+            NativeQuery<Tuple> query = buildQuery(sql, filters, pageable);
+
+            return getQueryMapResult(reportColumns, query);
         });
     }
 
@@ -76,6 +62,11 @@ public class ReportQueryExecutor {
     @SuppressWarnings("unchecked")
     private Map<String, Object> handleLoadTotalizersQueryResult(Supplier<Map<String, Object>> supplier) {
         return (Map<String, Object>) handle(supplier);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> handleLoadQueryResultList(Supplier<List<Map<String, Object>>> supplier) {
+        return (List<Map<String, Object>>) handle(supplier);
     }
 
     private Object handle(Supplier<?> supplier) {
@@ -123,6 +114,34 @@ public class ReportQueryExecutor {
         });
 
         return query;
+    }
+
+    private List<Map<String, Object>> getQueryMapResult(List<? extends IReportColumn> reportColumns, NativeQuery<Tuple> query) {
+        List<Map<String, Object>> resultMapList = new ArrayList<>();
+        List<Tuple> result = query.getResultList();
+
+        result.forEach(row -> {
+            Map<String, Object> mapResult = new HashMap<>();
+            List<TupleElement<?>> tupleElements = row.getElements();
+
+            reportColumns.forEach(reportColumn -> {
+                Object value = row.get(reportColumn.getField());
+
+                Object formattedValue = Utils.isNotEmpty(value) ? reportColumn.getFormat().getColumnFormatter().formatValue(value) : null;
+
+                mapResult.putIfAbsent(reportColumn.getField(), formattedValue);
+
+                tupleElements.removeIf(tupleElement -> tupleElement.getAlias().equals(reportColumn.getField()));
+            });
+
+            tupleElements.forEach(tupleElement -> {
+                mapResult.putIfAbsent(tupleElement.getAlias(), row.get(tupleElement));
+            });
+
+            resultMapList.add(mapResult);
+        });
+
+        return resultMapList;
     }
 
     private NativeQuery<Tuple> buildQueryTotalizers(String sql, Map<IReportFilter, Object> filters) {

@@ -1,16 +1,17 @@
 package com.dataweaver.api.infrastructure.exporters.pdf;
 
+import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
+import com.dataweaver.api.infrastructure.exporters.pdf.bean.PdfColumnValue;
+import com.dataweaver.api.infrastructure.exporters.pdf.bean.PdfTotalizer;
+import com.dataweaver.api.infrastructure.exporters.pdf.enums.EnumAlignment;
+import com.dataweaver.api.infrastructure.exporters.pdf.utils.PdfComponentUtils;
+import com.dataweaver.api.utils.StringUtil;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
-import com.dataweaver.api.infrastructure.exporters.pdf.bean.PdfLine;
-import com.dataweaver.api.infrastructure.exporters.pdf.enums.EnumAlignment;
-import com.dataweaver.api.infrastructure.exporters.pdf.utils.PdfComponentUtils;
-import com.dataweaver.api.utils.StringUtil;
 import lombok.Setter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -28,28 +29,35 @@ public class PdfExporter {
 
     private final String title;
 
-    private final List<PdfLine> headers;
+    private final List<PdfColumnValue> headers;
 
-    private final List<PdfLine> data;
+    private final List<PdfColumnValue> data;
 
-    private List<PdfLine> totalizers;
+    private final List<PdfTotalizer> totalizers;
 
     private int headerTableFontSize = 10;
 
     private int dataTableFontSize = 10;
 
-    public PdfExporter(String title, List<PdfLine> headers, List<PdfLine> data, int headerTableFontSize, int dataTableFontSize) {
+    public PdfExporter(String title,
+                       List<PdfColumnValue> headers,
+                       List<PdfColumnValue> data,
+                       List<PdfTotalizer> totalizers,
+                       int headerTableFontSize,
+                       int dataTableFontSize) {
         this.title = title;
         this.headers = headers;
         this.data = data;
+        this.totalizers = totalizers;
         this.headerTableFontSize = headerTableFontSize;
         this.dataTableFontSize = dataTableFontSize;
     }
 
-    public PdfExporter(String title, List<PdfLine> headers, List<PdfLine> data) {
+    public PdfExporter(String title, List<PdfColumnValue> headers, List<PdfColumnValue> data, List<PdfTotalizer> totalizers) {
         this.title = title;
         this.headers = headers;
         this.data = data;
+        this.totalizers = totalizers;
     }
 
     public ByteArrayOutputStream export() {
@@ -104,16 +112,16 @@ public class PdfExporter {
         return EnumAlignment.valueOf(align).getElement();
     }
 
-    public static List<PdfLine> mountWithDefaultAlign(String[] values) {
+    public static List<PdfColumnValue> mountWithDefaultAlign(String[] values) {
         return mountLines(Arrays.stream(values));
     }
 
-    public static List<PdfLine> mountWithDefaultAlign(List<String> values) {
+    public static List<PdfColumnValue> mountWithDefaultAlign(List<String> values) {
         return mountLines(values.stream());
     }
 
-    private static List<PdfLine> mountLines(Stream<String> stream) {
-        return stream.map(PdfLine::new).collect(Collectors.toList());
+    private static List<PdfColumnValue> mountLines(Stream<String> stream) {
+        return stream.map(PdfColumnValue::new).collect(Collectors.toList());
     }
 
 }

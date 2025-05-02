@@ -1,22 +1,26 @@
 package com.dataweaver.api.model.enums;
 
+import com.dataweaver.api.infrastructure.exporters.pdf.enums.EnumAlignment;
 import com.dataweaver.api.pattern.enums.IEnum;
 import lombok.Getter;
 
 @Getter
 public enum EnumColumnAlign implements IEnum {
 
-    LEFT("left", "Left"),
-    CENTER("center", "Center"),
-    RIGHT("right", "Right");
+    LEFT("left", "Left", EnumAlignment.LEFT),
+    CENTER("center", "Center", EnumAlignment.CENTER),
+    RIGHT("right", "Right", EnumAlignment.RIGHT);
 
     private String key;
 
     private String value;
 
-    EnumColumnAlign(String key, String value) {
+    private EnumAlignment enumAlignment;
+
+    EnumColumnAlign(String key, String value, EnumAlignment enumAlignment) {
         this.key = key;
         this.value = value;
+        this.enumAlignment = enumAlignment;
     }
 
     @jakarta.persistence.Converter(autoApply = true)

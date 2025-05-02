@@ -12,8 +12,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -45,18 +47,27 @@ public class WebMvcConfig implements WebMvcConfigurer {
         mapper.registerModule(new EmptyStringAsNullModule());
 
         final MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter(mapper);
+        final ByteArrayHttpMessageConverter byteArrayConverter = new ByteArrayHttpMessageConverter();
+        final ResourceHttpMessageConverter resourceConverter = new ResourceHttpMessageConverter();
+
+        byteArrayConverter.setSupportedMediaTypes(
+                List.of(MediaType.APPLICATION_PDF,
+                        MediaType.APPLICATION_OCTET_STREAM,
+                        MediaType.parseMediaType("text/csv"),
+                        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")));
+
 
         converters.clear();
-        converters.add(new ByteArrayHttpMessageConverter());
         converters.add(jsonConverter);
+        converters.add(byteArrayConverter);
+        converters.add(resourceConverter);
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addWebRequestInterceptor(tenantInterceptor);
         registry.addInterceptor(userEntityManagerInterceptor).addPathPatterns(
-                IReportController.PATH.replace(Paths.prefixPath, prefixPath) + "/{id}/result",
-                IReportController.PATH.replace(Paths.prefixPath, prefixPath) + "/{id}/totalizers"
+                IReportController.PATH.replace(Paths.prefixPath, prefixPath) + IReportController.RESULT_PATH + "/**"
         );
     }
 

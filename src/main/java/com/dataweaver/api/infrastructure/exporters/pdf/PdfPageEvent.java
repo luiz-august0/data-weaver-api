@@ -1,33 +1,31 @@
 package com.dataweaver.api.infrastructure.exporters.pdf;
 
-import com.lowagie.text.Font;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
-import com.dataweaver.api.infrastructure.exporters.pdf.bean.PdfLine;
+import com.dataweaver.api.infrastructure.exporters.pdf.bean.PdfColumnValue;
+import com.dataweaver.api.infrastructure.exporters.pdf.bean.PdfTotalizer;
 import com.dataweaver.api.infrastructure.exporters.pdf.utils.PdfComponentUtils;
 import com.dataweaver.api.utils.DateUtil;
 import com.dataweaver.api.utils.ListUtil;
 import com.dataweaver.api.utils.Utils;
+import com.lowagie.text.Font;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
 
 import java.awt.*;
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 public class PdfPageEvent extends PdfPageEventHelper {
 
-    private static final String BASE_PATH_LOGO = File.separator + "templates" + File.separator + "clinicas-logo.png";
-
-    private final List<PdfLine> headers;
+    private final List<PdfColumnValue> headers;
 
     private final String title;
 
     private final int headerTableFontSize;
 
-    private final List<PdfLine> totalizers;
+    private final List<PdfTotalizer> totalizers;
 
-    public PdfPageEvent(List<PdfLine> headers, String title, int headerTableFontSize, List<PdfLine> totalizers) {
+    public PdfPageEvent(List<PdfColumnValue> headers, String title, int headerTableFontSize, List<PdfTotalizer> totalizers) {
         this.headers = headers;
         this.title = title;
         this.headerTableFontSize = headerTableFontSize;
@@ -132,7 +130,7 @@ public class PdfPageEvent extends PdfPageEventHelper {
             Font font = PdfComponentUtils.mountFont(8, Color.BLACK);
 
             totalizers.forEach(totalizer -> {
-                cell.setPhrase(new Phrase(totalizer.getValue().substring(0, totalizer.getValue().indexOf(":")).trim(), font));
+                cell.setPhrase(new Phrase(totalizer.getHeader(), font));
 
                 table.addCell(cell);
             });
@@ -147,7 +145,7 @@ public class PdfPageEvent extends PdfPageEventHelper {
             PdfComponentUtils.addCellStyle(cellContent);
 
             totalizers.forEach(totalizer -> {
-                cellContent.setPhrase(new Phrase(totalizer.getValue().substring(totalizer.getValue().indexOf(":") + 1).trim(), font));
+                cellContent.setPhrase(new Phrase(totalizer.getValue(), font));
 
                 tableContent.addCell(cellContent);
             });

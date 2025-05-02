@@ -5,8 +5,10 @@ import com.dataweaver.api.infrastructure.converter.Converter;
 import com.dataweaver.api.model.dtos.ReportDTO;
 import com.dataweaver.api.model.entities.Report;
 import com.dataweaver.api.service.ReportService;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -34,6 +36,11 @@ public class ReportController extends AbstractAllController<ReportService, Repor
     @Override
     public ReportDTO findByKey(String key) {
         return Converter.convertEntityToDTO(reportService.findByKey(key), ReportDTO.class);
+    }
+
+    @Override
+    public ResponseEntity<ByteArrayResource> getReportPdf(Integer id, Map<String, Object> filters, Pageable pageable) {
+        return reportService.getReportPdf(id, filters, pageable);
     }
 
 }

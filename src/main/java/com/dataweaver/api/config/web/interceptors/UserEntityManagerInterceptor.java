@@ -1,10 +1,7 @@
 package com.dataweaver.api.config.web.interceptors;
 
 import com.dataweaver.api.infrastructure.context.UserContext;
-import com.dataweaver.api.service.DatabaseConnectionService;
-import com.dataweaver.api.service.DatasourceConnectionService;
-import com.dataweaver.api.service.TokenService;
-import com.dataweaver.api.utils.TokenUtil;
+import com.dataweaver.api.service.UserEntityManagerService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,24 +13,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 public class UserEntityManagerInterceptor implements HandlerInterceptor {
 
-    private final DatasourceConnectionService datasourceConnectionService;
-
-    private final DatabaseConnectionService databaseConnectionService;
-
-    private final TokenService tokenService;
+    private final UserEntityManagerService userEntityManagerService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        UserContext.clearEntityManager();
-
-        UserContext.setEntityManager(
-                datasourceConnectionService.getEntityManager(
-                        datasourceConnectionService.getUserEntityManagerFactory(
-                                databaseConnectionService.getConnection(),
-                                getDatabasePassword(request)
-                        )
-                )
-        );
+        userEntityManagerService.updateEntityManager();
 
         return true;
     }
@@ -46,10 +30,6 @@ public class UserEntityManagerInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         UserContext.clearEntityManager();
-    }
-
-    private String getDatabasePassword(HttpServletRequest request) {
-        return tokenService.getDatabasePasswordClaimFromToken(TokenUtil.getTokenFromRequest(request));
     }
 
 }
