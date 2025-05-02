@@ -65,7 +65,7 @@ public class PdfExporter {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document(PageSize.A4);
             PdfWriter pdfWriter = PdfWriter.getInstance(document, baos);
-            PdfPageEvent event = new PdfPageEvent(headers, title, headerTableFontSize, totalizers);
+            PdfPageEvent event = new PdfPageEvent(headers, title, headerTableFontSize, dataTableFontSize, totalizers);
 
             pdfWriter.setPageEvent(event);
 

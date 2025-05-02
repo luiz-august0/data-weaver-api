@@ -23,11 +23,18 @@ public class PdfPageEvent extends PdfPageEventHelper {
 
     private final int headerTableFontSize;
 
+    private final int dataTableFontSize;
+
     private final List<PdfTotalizer> totalizers;
 
-    public PdfPageEvent(List<PdfColumnValue> headers, String title, int headerTableFontSize, List<PdfTotalizer> totalizers) {
+    public PdfPageEvent(List<PdfColumnValue> headers,
+                        String title,
+                        int headerTableFontSize,
+                        int dataTableFontSize,
+                        List<PdfTotalizer> totalizers) {
         this.headers = headers;
         this.title = title;
+        this.dataTableFontSize = dataTableFontSize;
         this.headerTableFontSize = headerTableFontSize;
         this.totalizers = totalizers;
     }
@@ -127,10 +134,8 @@ public class PdfPageEvent extends PdfPageEventHelper {
 
             PdfComponentUtils.addHeaderStyle(cell);
 
-            Font font = PdfComponentUtils.mountFont(8, Color.BLACK);
-
             totalizers.forEach(totalizer -> {
-                cell.setPhrase(new Phrase(totalizer.getHeader(), font));
+                cell.setPhrase(new Phrase(totalizer.getHeader(), PdfComponentUtils.mountFont(headerTableFontSize, Color.BLACK)));
 
                 table.addCell(cell);
             });
@@ -145,7 +150,7 @@ public class PdfPageEvent extends PdfPageEventHelper {
             PdfComponentUtils.addCellStyle(cellContent);
 
             totalizers.forEach(totalizer -> {
-                cellContent.setPhrase(new Phrase(totalizer.getValue(), font));
+                cellContent.setPhrase(new Phrase(totalizer.getValue(), PdfComponentUtils.mountFont(dataTableFontSize, Color.BLACK)));
 
                 tableContent.addCell(cellContent);
             });
