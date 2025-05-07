@@ -1,6 +1,5 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.external.s3.S3StorageService;
 import com.dataweaver.api.infrastructure.context.UserContext;
 import com.dataweaver.api.model.entities.User;
@@ -38,15 +37,7 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
     @Override
     @Transactional
     public User insert(User user) {
-        user.setRole(EnumUserRole.ADMIN);
-
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-
-        user.setSchema(TenantContext.getCurrentTenant());
-
-        resolverUserPhoto(user, null);
-
-        validator.validate(user);
+        prepareForInsert(user);
 
         userRepository.save(user);
 
@@ -60,7 +51,6 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
 
         user.setId(userOld.getId());
         user.setRole(userOld.getRole());
-        user.setSchema(userOld.getSchema());
         user.setActive(Utils.nvl(user.getActive(), Boolean.TRUE));
 
         if (StringUtil.isNotNullOrEmpty(user.getPassword())) {
@@ -87,6 +77,16 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
 
     public Optional<User> findByLogin(String login) {
         return userRepository.findByLogin(login);
+    }
+
+    public void prepareForInsert(User user) {
+        user.setRole(EnumUserRole.ADMIN);
+
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+
+        resolverUserPhoto(user, null);
+
+        validator.validate(user);
     }
 
     private void resolverUserPhoto(User user, String oldPhoto) {

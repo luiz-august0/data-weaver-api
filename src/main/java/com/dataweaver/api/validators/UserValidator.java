@@ -11,7 +11,6 @@ import com.dataweaver.api.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class UserValidator extends AbstractValidator<User> {
     private final UserRepository userRepository;
@@ -35,7 +34,7 @@ public class UserValidator extends AbstractValidator<User> {
     public void validate(User user) {
         super.validate(user);
 
-        if (!Objects.equals(user.getLogin(), "admin") && !StringUtil.isValidEmail(user.getLogin())) {
+        if (!StringUtil.isValidEmail(user.getLogin())) {
             throw new ApplicationGenericsException(EnumUnauthorizedException.LOGIN_INVALID);
         }
 

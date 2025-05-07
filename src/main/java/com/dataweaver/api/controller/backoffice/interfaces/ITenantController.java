@@ -4,6 +4,7 @@ import com.dataweaver.api.model.dtos.UserDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.dataweaver.api.constants.Paths.backofficePrefixPath;
 
@@ -13,6 +14,7 @@ public interface ITenantController {
     String PATH = backofficePrefixPath + "/tenant";
 
     @PostMapping("/create")
-    UserDTO create(@RequestBody UserDTO user);
+    void create(@RequestBody UserDTO user,
+                @RequestParam(name = "schema") String schema);
 
 }

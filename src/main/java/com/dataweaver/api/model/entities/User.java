@@ -49,18 +49,8 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "schema")
-    private String schema;
-
     @Transient
     private MultipartBean photoMultipart;
-
-    public User(String login, String password, EnumUserRole role, String schema) {
-        this.login = login;
-        this.password = password;
-        this.role = role;
-        this.schema = schema;
-    }
 
     @PrePersist
     @PreUpdate

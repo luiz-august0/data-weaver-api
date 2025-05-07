@@ -19,3 +19,5 @@ CREATE SEQUENCE IF NOT EXISTS public.gen_id_user
 ALTER TABLE public.users ADD CONSTRAINT pk_users PRIMARY KEY (id);
 
 ALTER TABLE public.users ADD CONSTRAINT users_login_key UNIQUE (login);
+
+CREATE TRIGGER tr_set_schema_users BEFORE INSERT ON users FOR EACH ROW EXECUTE PROCEDURE public.trigger_set_schema();

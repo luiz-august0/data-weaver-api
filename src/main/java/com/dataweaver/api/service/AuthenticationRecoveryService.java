@@ -1,7 +1,7 @@
 package com.dataweaver.api.service;
 
+import com.dataweaver.api.events.mail.MailEvent;
 import com.dataweaver.api.infrastructure.context.TenantContext;
-import com.dataweaver.api.events.mail.MailEventPublisher;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.enums.EnumGenericsException;
 import com.dataweaver.api.infrastructure.mail.builders.RecoveryMailBuilder;
@@ -12,6 +12,7 @@ import com.dataweaver.api.model.records.AuthenticationRecoveryRecord;
 import com.dataweaver.api.repository.TenantRepository;
 import com.dataweaver.api.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -25,7 +26,7 @@ public class AuthenticationRecoveryService {
 
     private final TokenService tokenService;
 
-    private final MailEventPublisher mailEventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final RecoveryMailBuilder recoveryMailBuilder;
 
@@ -50,7 +51,7 @@ public class AuthenticationRecoveryService {
 
         ITemplate iTemplate = recoveryMailBuilder.build(recoveryToken);
 
-        mailEventPublisher.publish(user.getLogin(), iTemplate.getSubject(), iTemplate.getHtml());
+        eventPublisher.publishEvent(new MailEvent(this, user.getLogin(), iTemplate.getSubject(), iTemplate.getHtml()));
     }
 
     public void changePassword(AuthenticationRecoveryPasswordRecord authenticationRecoveryPasswordRecord) {

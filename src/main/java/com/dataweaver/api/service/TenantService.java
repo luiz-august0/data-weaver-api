@@ -1,12 +1,13 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.infrastructure.context.TenantContext;
+import com.dataweaver.api.events.user.UserEvent;
 import com.dataweaver.api.infrastructure.exceptions.ApplicationGenericsException;
 import com.dataweaver.api.infrastructure.exceptions.ValidatorException;
 import com.dataweaver.api.model.entities.User;
 import com.dataweaver.api.utils.StringUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -22,6 +23,8 @@ public class TenantService {
     private final FlywayService flywayService;
 
     private final UserService userService;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     private void createSchema(String schema) {
         try {
@@ -47,14 +50,14 @@ public class TenantService {
     }
 
     @Transactional
-    public User createTenantAndUser(User user) {
-        if (StringUtil.isNullOrEmpty(user.getSchema())) throw new ValidatorException("Deve ser informado o tenant");
+    public void createTenantAndUser(User user, String schema) {
+        if (StringUtil.isNullOrEmpty(schema)) throw new ValidatorException("Deve ser informado o tenant");
 
-        createSchema(user.getSchema());
+        createSchema(schema);
 
-        TenantContext.setCurrentTenant(user.getSchema());
+        userService.prepareForInsert(user);
 
-        return userService.insert(user);
+        eventPublisher.publishEvent(new UserEvent(this, user, schema));
     }
 
 }

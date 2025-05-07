@@ -1,9 +1,7 @@
 package com.dataweaver.api.service;
 
-import com.dataweaver.api.infrastructure.context.TenantContext;
 import com.dataweaver.api.constants.FlywayConstants;
-import com.dataweaver.api.model.entities.User;
-import com.dataweaver.api.model.enums.EnumUserRole;
+import com.dataweaver.api.infrastructure.context.TenantContext;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,14 +42,6 @@ public class FlywayService {
             TenantContext.clear();
 
             migrateAndRepair(schema);
-
-            String login = String.format(FlywayConstants.DEFAULT_USER, schema);
-
-            Optional<User> user = userService.findByLogin(login);
-
-            if (user.isEmpty()) {
-                userService.insert(new User(login, schema + FlywayConstants.DEFAULT_PASSWORD, EnumUserRole.ADMIN, schema));
-            }
         }
     }
 
