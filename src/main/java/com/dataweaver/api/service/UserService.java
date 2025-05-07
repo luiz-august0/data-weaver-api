@@ -52,6 +52,7 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
         user.setId(userOld.getId());
         user.setRole(userOld.getRole());
         user.setActive(Utils.nvl(user.getActive(), Boolean.TRUE));
+        user.setSchema(userOld.getSchema());
 
         if (StringUtil.isNotNullOrEmpty(user.getPassword())) {
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
@@ -77,6 +78,10 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
 
     public Optional<User> findByLogin(String login) {
         return userRepository.findByLogin(login);
+    }
+
+    public Optional<User> findByGlobalLogin(String login) {
+        return userRepository.findByGlobalLogin(login);
     }
 
     public void prepareForInsert(User user) {

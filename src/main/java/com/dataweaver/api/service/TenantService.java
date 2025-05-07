@@ -50,14 +50,14 @@ public class TenantService {
     }
 
     @Transactional
-    public void createTenantAndUser(User user, String schema) {
-        if (StringUtil.isNullOrEmpty(schema)) throw new ValidatorException("Deve ser informado o tenant");
+    public void createTenantAndUser(User user) {
+        if (StringUtil.isNullOrEmpty(user.getSchema())) throw new ValidatorException("Deve ser informado o tenant");
 
-        createSchema(schema);
+        createSchema(user.getSchema());
 
         userService.prepareForInsert(user);
 
-        eventPublisher.publishEvent(new UserEvent(this, user, schema));
+        eventPublisher.publishEvent(new UserEvent(this, user, user.getSchema()));
     }
 
 }

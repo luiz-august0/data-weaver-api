@@ -37,15 +37,13 @@ public class AuthenticationRecoveryService {
             throw new ApplicationGenericsException(EnumGenericsException.INVALID_TENANT);
         }
 
-        Optional<User> optionalUser = userService.findByLogin(Utils.nvl(authenticationRecoveryRecord.login(), ""));
+        Optional<User> optionalUser = userService.findByGlobalLogin(Utils.nvl(authenticationRecoveryRecord.login(), ""));
 
         if (optionalUser.isEmpty()) {
             throw new ApplicationGenericsException(EnumGenericsException.USER_NOT_FOUND);
         }
 
         User user = optionalUser.get();
-
-        TenantContext.setCurrentTenant(user.getSchema());
 
         String recoveryToken = tokenService.generateRecovery(user);
 

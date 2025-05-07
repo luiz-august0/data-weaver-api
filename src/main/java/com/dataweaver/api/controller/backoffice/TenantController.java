@@ -15,8 +15,8 @@ public class TenantController implements ITenantController {
     private final TenantService tenantService;
 
     @Override
-    public void create(UserDTO user, String schema) {
-        tenantService.createTenantAndUser(Converter.convertDTOToEntity(user, User.class), schema);
+    public void create(UserDTO user) {
+        tenantService.createTenantAndUser(Converter.convertDTOToEntity(user, User.class));
     }
 
 }

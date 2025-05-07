@@ -25,6 +25,8 @@ public class UserDTO extends AbstractDTO<User> {
 
     private String photo;
 
+    private String schema;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private MultipartBean photoMultipart;
 

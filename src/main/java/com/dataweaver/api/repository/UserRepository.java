@@ -21,4 +21,11 @@ public interface UserRepository extends
             "    and id <> :id ", nativeQuery = true)
     Boolean existsByLoginAndIdIsNot(String login, Integer id);
 
+    @Query(value = "" +
+            " select * " +
+            "   from public.users " +
+            "  where login = :login " +
+            "  limit 1 ", nativeQuery = true)
+    Optional<User> findByGlobalLogin(String login);
+
 }
