@@ -23,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "users", schema = "public")
+@Table(name = "users")
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class User extends AbstractEntity implements UserDetails {
 
