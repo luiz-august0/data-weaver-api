@@ -38,6 +38,7 @@ public class UserService extends AbstractService<UserRepository, User, UserValid
     @Transactional
     public User insert(User user) {
         prepareForInsert(user);
+        //teste
 
         userRepository.save(user);
 
